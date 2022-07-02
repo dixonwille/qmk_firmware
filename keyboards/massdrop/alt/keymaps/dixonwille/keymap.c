@@ -60,6 +60,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint32_t key_timer;
 
     switch (keycode) {
+        case KC_GESC:
+            {
+                static bool grvkey_registered;
+                if (record->event.pressed) {
+                    if (MODS_CTRL) {
+                        register_code(KC_GRV);
+                        grvkey_registered = true;
+                        return false;
+                    }
+                } else {
+                    if (grvkey_registered) {
+                        unregister_code(KC_GRV);
+                        grvkey_registered = false;
+                        return false;
+                    }
+                }
+                return true;
+            }
         case U_T_AUTO:
             if (record->event.pressed && MODS_SHIFT && MODS_CTRL) {
                 TOGGLE_FLAG_AND_PRINT(usb_extra_manual, "USB extra port manual mode");
